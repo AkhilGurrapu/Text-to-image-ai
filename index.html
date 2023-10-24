@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Text to Image Generator with OpenAI</title>
+  </head>
+  <body>
+    <div id="container">
+      <form>
+        <input type="text" id="text" placeholder="Enter your text here..." required />
+        <input type="submit" value="Generate Image" />
+      </form>
+      <div id="result"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="script.js"></script>
+<script>
+  const form = document.querySelector("form");
+  const text = document.querySelector("#text");
+  const result = document.querySelector("#result");
+  
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const response = await axios({
+      method: 'post',
+      url: 'https://api.openai.com/v1/images/generations',
+      headers: {
+        'Authorization': 'Bearer sk- ' + 'ACCESS_TOKEN',
+        'Content-Type': 'application/json',
+      },
+      data: {
+        "model": "image-alpha-001",
+        "prompt": text.value,
+        "num_images":1,
+        "size":"1024x1024",
+        "response_format":"url"
+      }
+    });
+
+    const imageUrl = response.data.data[0].url;
+    result.style.backgroundImage = `url(${imageUrl})`;
+    result.style.backgroundSize = 'cover';
+    result.style.backgroundPosition = 'center';
+    result.style.width = '500px';
+    result.style.height = '500px';
+  });
+</script>
+<style>
+  body {
+    background-color: #000;
+  }
+
+  #container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1em;
+  }
+
+  input[type="text"] {
+    width: 500px;
+    height: 50px;
+    font-size: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 2px #fff;
+  }
+
+  input[type="submit"] {
+    width: 500px;
+    height: 50px;
+    font-size: 20px;
+    background-color: #fff;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 2px #fff;
+    cursor: pointer;
+  }
+
+  #result {
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px 5px #fff;
+  }
+
+  ::selection {
+    background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #e821d3);
+    color: #fff;
+  }
+</style>
+
+<div id="result" style="display: none;"></div>
+
+<script>
+  document.getElementById("result").addEventListener("load", function() {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("result").style.display = "block";
+  });
+</script>
+<style>
+  #loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: #fff;
+    height: 100vh;
+  }
+
+  @keyframes neon-glow {
+    from {
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #00e6e6, 0 0 70px #00e6e6, 0 0 80px #00e6e6, 0 0 100px #00e6e6, 0 0 150px #00e6e6;
+    }
+    to {
+      text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #00e6e6, 0 0 30px #00e6e6, 0 0 40px #00e6e6, 0 0 70px #00e6e6, 0 0 80px #00e6e6, 0 0 100px #00e6e6, 0 0 150px #00e6e6;
+    }
+  }
+
+  #loading span {
+    animation: neon-glow 1s ease-in-out infinite alternate;
+  }
+</style>
+
+  </body>
+</html>
